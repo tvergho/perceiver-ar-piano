@@ -1,5 +1,6 @@
 # Perceiver AR (Piano)
 **Author**: Tyler Vergho
+
 **Class**: COSC 89, Music and AI, Winter 2023
 
 ## Description
@@ -20,7 +21,7 @@ When generating new samples, the parameters that seem to have the most impact on
 
 ## Organization
 
-For the best, final versions of each model's output, refer to the files within the `/samples/successes` directory. Individual samples from different iterations of each model can be found in the subfolders of the `/samples` directory. Where possible, the original "primer" MIDI file is included in the same folder as the generated output. MIDI samples were converted to `.mp3` files using VLC Media Player.
+For the best, final versions of each model's output, refer to the files within the `/samples/successes` directory. Individual samples from different iterations of each model can be found in the subfolders of the `/samples` directory. Where possible, the original "primer" MIDI file is included in the same folder as the generated output. MIDI samples were converted to `.mp3` files using VLC Media Player. A couple common primers used across models are included in the `/samples/primers` directory.
 
 ## Models
 
@@ -46,7 +47,7 @@ Some challenges faced during the training and generation process included:
 - **Pytorch/Research Code**: The original codebase was written in Jax, the learning curve for which I eventually concluded was too steep for me to take on for this assignment. I eventually found an [implementation](https://github.com/lucidrains/perceiver-ar-pytorch) of the model in Pytorch, but it was still a bit difficult to understand and work with (especially as I had minimal experience with Pytorch or deep learning models previously). I had to make some modifications to the code for it to work with the Google Cloud TPU VMs (as opposed to the original GPUs), and successfully train and generate samples from the models. The [Perceiver Music Generation](https://github.com/feizc/Perceiver-Music-Generation) repository was extremely helpful in providing an example of how to train the model to generate music output, as well as providing code for specific tasks like encoding/decoding MIDI files and decoding the model's output.
 - **Memory**: Training with a context size beyond 2048, even with a batch size of 1, demanded GPU memory beyond the capacity of a free Google Colab instance. The v3-8 version of TPUs from Google provide 8 cores with 16 GB of memory per core, which was enough to train the models with the above parameters with this setup. However, attempting to exceed these limits – for instance, by using 8 attention heads or a depth of 12 on the 16384 model – quickly led to out of memory errors. All the models were trained using a distributed strategy across multiple TPUs using the Huggingface [accelerate](https://huggingface.co/docs/accelerate/package_reference/accelerator) package. 
 - **Repetitive Output**: Several samples demonstrate that the model is prone to generating repetitive output (where the same note tends to repeat over and over for the duration of the song). This is a common problem with generative models, and is not unique to the Perceiver AR architecture. More experimentation with the model's hyperparameters and training data could help to mitigate this issue.
-- **Campus Wifi**: It'd occasionally cut out, forcing restart of training/generation in a couple cases when scripts were being run through SSH.
+- **Campus WiFi**: It'd occasionally cut out, forcing restart of training/generation in a couple cases when scripts were being run through SSH.
 
 ## Acknowledgements
 - [Perceiver AR Pytorch](https://github.com/lucidrains/perceiver-ar-pytorch)
