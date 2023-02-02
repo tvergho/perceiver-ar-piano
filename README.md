@@ -1,18 +1,23 @@
-# Perceiver AR (Piano)
+# Perceiver AR: Piano Continuations
 **Author**: Tyler Vergho
 
 **Class**: COSC 89, Music and AI, Winter 2023
 
 ## Description
 
-Perceiver AR (original repository [here](https://github.com/google-research/perceiver-ar)) is a transformer model based on cross-attention that has been trained on long-range input contexts of up to 65,536 tokens. The model is general-purpose – it can be applied to books, images, and musical performances. This project mirrors the work done in the [original paper](https://arxiv.org/abs/2202.07765) by training the model – tuned with various hyperparameter configurations – on an open-source dataset of piano performances.
+Perceiver AR (original repository [here](https://github.com/google-research/perceiver-ar)) is a transformer model based on cross-attention that has been trained on long-range input contexts of up to 65,536 tokens. The model is general-purpose – it can be applied to books, images, and musical performances to generate outputs with extensive coherence and structure. This project mirrors the work done in the [original paper](https://arxiv.org/abs/2202.07765) by training the model – tuned with various hyperparameter configurations – on an open-source dataset of piano performances.
 
 To use the model, an input MIDI file is then supplied as a primer sequence. The model then takes this input and attempts to generate a continuation in the style of the original song. The output is a MIDI file that can be played back in a MIDI player or converted to audio. 
 
+The models are obviously too large to upload to GitHub or Canvas. The checkpoint files can be accessed through [this Google Drive link](https://drive.google.com/drive/folders/19weYvxuSZro-UoMWZ235VFbnxypz6gvw?usp=share_link).
+
 ## Usage
 - Download the Maestro v3 dataset from [here](https://magenta.tensorflow.org/datasets/maestro#v300) and extract it to the `/maestro-v3.0.0"` directory. Alternatively, you may use a different dataset, but you will need to modify the `prep.py` file to load the new dataset.
+- `pip install pretty_midi perceiver_ar_pytorch accelerate tqdm torch==1.11`
+  - Install [Torch XLA](https://github.com/pytorch/xla) if needed for TPU compatibility.
 - Run `prep.py` to preprocess the dataset and save the encoded MIDIs as `.pickle` files for later use by the model.
 - Run `train.py` to train the model. Adjust hyperparameters using the constants at the top and in the `main` function. After training, the model checkpoint will be saved to the `/ckpt` directory.
+  - You may then need to run the `cpu_convert.py` script to convert the model checkpoint to a CPU-compatible format. This is only necessary if you are running on a TPU.
 - Run `generate.py` to generate samples from the model. Adjust hyperparameters using the constants at the top and in the `main` function. Also make sure to select a priming file. The generated samples will be saved to the `/output` directory.
 - `train.py` and `generate.py` are designed to be used with the `accelerate` package, so they should be run with `accelerate launch` instead of `python`. For more information on `accelerate`, see [here](https://huggingface.co/docs/accelerate/).
 - If running on a Google Cloud TPU, be sure to update your environment configuration so that the TPU is recognized by PyTorch. See [here](https://cloud.google.com/tpu/docs/pytorch-xla-ug-tpu-vm) for instructions.
@@ -35,7 +40,7 @@ A fifth model with significantly increased dimensionality (d=2048 instead of d=1
 
 The dataset used is [MAESTRO v3](https://magenta.tensorflow.org/datasets/maestro#v300) (MIDI and Audio Edited for Synchronous TRacks and Organization), which is the same dataset referenced in the music training section in the original Perceiver AR paper. It consists of around 200 hours of piano performances stored in the MIDI format.
 
-As expected, training the models took successively more time, memory, and compute power as the context length, layers, and dimensions increased. All models (except for the 2048 version) were trained on [Google Cloud TPU](https://cloud.google.com/tpu) VMs (provided free of charge through the [TPU Research Cloud](https://sites.research.google/trc/about/) program). The largest model (v4) took about two days to train on a single TPUv3-8 VM. Other models took between 12-24 hours, depending on the context length and dimensionality.
+As expected, training the models took successively more time, memory, and compute power as the context length, layers, and dimensions increased. All models (except for the 2048 version) were trained on [Google Cloud TPU](https://cloud.google.com/tpu) v2-8 and v3-8 VMs. These were provided free of charge through the [TPU Research Cloud](https://sites.research.google/trc/about/) program (and would've been a sizeable compute bill otherwise!) The largest model (v4) took about two days to train on a single TPUv3-8 VM. Other models took between 12-24 hours, depending on the context length and dimensionality.
 
 The 16384 model attained a best cross-entropy loss value of 1.52 after 38 epochs of training. The 8192 model attained a best loss of 2.05.
 
