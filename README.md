@@ -38,7 +38,7 @@ For the best, final versions of each model's output, refer to the files within t
 - v3: 8192 context length, 1024 dimensions, 8 attention heads, 8 layers
 - v4: 16384 context length, 512 dimensions, 4 attention heads, 8 layers
 
-A fifth model with significantly increased dimensionality (d=2048 instead of d=1024 or d=512) and context length of 4096 was in the process of being trained as well, but some technical issues forced a restart before the deadline. When complete, the Drive folder and GitHub repository will be updated with samples and the model checkpoint.
+A fifth model with significantly increased dimensionality (d=2048 instead of d=1024 or d=512) and context length of 4096 was in the process of being trained as well, but some technical issues forced a restart before the deadline. When complete, the [Drive folder](https://drive.google.com/drive/folders/19weYvxuSZro-UoMWZ235VFbnxypz6gvw?usp=share_link) and [GitHub repository](https://github.com/tvergho/perceiver-ar-piano) will be updated with samples and the model checkpoint.
 
 The dataset used is [MAESTRO v3](https://magenta.tensorflow.org/datasets/maestro#v300) (MIDI and Audio Edited for Synchronous TRacks and Organization), which is the same dataset referenced in the music training section in the original Perceiver AR paper. It consists of around 200 hours of piano performances stored in the MIDI format.
 
