@@ -12,7 +12,7 @@ To use the model, an input MIDI file is then supplied as a primer sequence. The 
 The models are obviously too large to upload to GitHub or Canvas. The checkpoint files can be accessed through [this Google Drive link](https://drive.google.com/drive/folders/19weYvxuSZro-UoMWZ235VFbnxypz6gvw?usp=share_link).
 
 ## Usage
-- Download the Maestro v3 dataset from [here](https://magenta.tensorflow.org/datasets/maestro#v300) and extract it to the `/maestro-v3.0.0"` directory. Alternatively, you may use a different dataset, but you will need to modify the `prep.py` file to load the new dataset.
+- Download the Maestro v3 dataset from [here](https://magenta.tensorflow.org/datasets/maestro#v300) (the MIDI version) and extract it to the `/maestro-v3.0.0` directory. Alternatively, you may use a different dataset, but you will need to modify the `prep.py` file to load the new dataset.
 - `pip install pretty_midi perceiver_ar_pytorch accelerate tqdm torch==1.11`
   - Install [Torch XLA](https://github.com/pytorch/xla) if needed for TPU compatibility.
 - Run `prep.py` to preprocess the dataset and save the encoded MIDIs as `.pickle` files for later use by the model.
