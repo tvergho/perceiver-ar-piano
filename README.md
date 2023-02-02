@@ -24,6 +24,8 @@ The models are obviously too large to upload to GitHub or Canvas. The checkpoint
 
 When generating new samples, the parameters that seem to have the most impact on the output are the `cross_attn_seq_len` (controlling the context size of the cross-attention layer), `num_prime` (which controls the length of the primer sequence – larger values will result in a shorter generated output), and `temperature` (which controls the randomness of the output – higher values will result in more random output). These parameters can be adjusted in the `generate.py` file.
 
+Note that inference from a pre-trained model demands far less compute power than training. Most of the outputs were generated through [Kaggle notebooks](https://www.kaggle.com/docs/notebooks) (which provide 30 hours of free GPU usage/week) on two NVIDIA T4 GPUs. Depending on parameters, the 8192 model takes around 45 minutes to generate a full-length sample on that setup.
+
 ## Organization
 
 For the best, final versions of each model's output, refer to the files within the `/samples/successes` directory. Individual samples from different iterations of each model can be found in the subfolders of the `/samples` directory. Where possible, the original "primer" MIDI file is included in the same folder as the generated output. MIDI samples were converted to `.mp3` files using VLC Media Player. A couple common primers used across models are included in the `/samples/primers` directory.
@@ -58,5 +60,6 @@ Some challenges faced during the training and generation process included:
 - [Perceiver AR Pytorch](https://github.com/lucidrains/perceiver-ar-pytorch)
 - [Perceiver Music Generation](https://github.com/feizc/Perceiver-Music-Generation)
 - Perceiver AR [paper](https://arxiv.org/abs/2202.07765) and [code](https://github.com/google-research/perceiver-ar)
-- [Google Cloud TPU](https://cloud.google.com/tpu) – for compute power and storage.
+- [Google Cloud TPU](https://cloud.google.com/tpu) and the [TPU Research Cloud](https://sites.research.google/trc/about/) for compute power and storage.
 - [MIDI processor](https://github.com/jason9693/midi-neural-processor) – used for encoding/decoding and loading/saving MIDI files.
+- [Kaggle](https://www.kaggle.com/docs/notebooks) and [Google Colab](https://colab.research.google.com/)
