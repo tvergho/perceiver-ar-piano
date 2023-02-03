@@ -396,26 +396,27 @@ def greedy_decode(condi, model, max_sequence):
     return ys 
 
 def sample_sequence(condi, model, max_sequence, temperature=0.7, top_k=0, top_p=0.9): 
-    ys = [] 
-    for i in range(max_sequence): 
-        if i > 0: 
-            predict = torch.tensor(ys).long().unsqueeze(0).to(device)
-            input = torch.cat((condi, predict), dim=-1).to(device)
-        else: 
-            input = condi 
-        out = model(input)
-        logits = out[0][-1, :] / temperature 
-        logits = top_filtering(logits, top_k=top_k, top_p=top_p) 
-        probs = F.softmax(logits, dim=-1)
-        
-        next_token = torch.multinomial(probs, 1).item() 
-        max_iter = 0 
-        while next_token == TOKEN_END or next_token == TOKEN_PAD: 
+    ys = []
+    with tqdm(range(max_sequence), total=max_sequence) as t:
+        for i in t: 
+            if i > 0: 
+                predict = torch.tensor(ys).long().unsqueeze(0).to(device)
+                input = torch.cat((condi, predict), dim=-1).to(device)
+            else: 
+                input = condi 
+            out = model(input)
+            logits = out[0][-1, :] / temperature 
+            logits = top_filtering(logits, top_k=top_k, top_p=top_p) 
+            probs = F.softmax(logits, dim=-1)
+            
             next_token = torch.multinomial(probs, 1).item() 
-            max_iter += 1 
-            if max_iter > 100: 
-                next_token = TOKEN_END - 1 
-        ys.append(next_token)
+            max_iter = 0 
+            while next_token == TOKEN_END or next_token == TOKEN_PAD: 
+                next_token = torch.multinomial(probs, 1).item() 
+                max_iter += 1 
+                if max_iter > 100: 
+                    next_token = TOKEN_END - 1 
+            ys.append(next_token)
         
     return ys 
 
@@ -504,18 +505,17 @@ def generate():
     model, test_loader = accelerator.prepare(model, test_loader)
 
     with torch.no_grad(): 
-        with tqdm(enumerate(test_loader), total=len(test_loader)) as t: 
-            for batch_num, batch in t: 
-                x = batch[0].to(device) 
-                tgt = batch[1].to(device) 
-                condi = x[:, :num_prime] 
-                
-                predict = sample_sequence(condi, model, max_sequence - num_prime - 1, temperature=temperature) 
-                
-                predict = np.array(predict) 
-                midi_name = 'sample_' + str(1) + '.mid' 
-                midi_path = os.path.join(output_dir, midi_name)
-                decode_midi(predict, file_path=midi_path) 
-                break
+        for batch_num, batch in enumerate(test_loader): 
+            x = batch[0].to(device) 
+            tgt = batch[1].to(device) 
+            condi = x[:, :num_prime] 
+            
+            predict = sample_sequence(condi, model, max_sequence - num_prime - 1, temperature=temperature) 
+            
+            predict = np.array(predict) 
+            midi_name = 'sample_' + str(1) + '.mid' 
+            midi_path = os.path.join(output_dir, midi_name)
+            decode_midi(predict, file_path=midi_path) 
+            break
 
 generate()
